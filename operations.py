@@ -67,18 +67,20 @@ def userInputCheck(driver,user_id:str=None):
 
     return elementPresentCheck(driver,By.ID,path="user_id",callback=callback)
 
-def saveOperationArrayToJson(array:list[Operation], name):
+def operationArrayToJson(array:list[Operation])-> str:
     d = list(map(lambda x:asdict(x),array))
-    with open(f"data/{name}.json",mode='w+') as f:
-        json.dump(d,f)
+    return json.dumps(d,indent=4)
         
-def betterParseInt(x:str):
-    return x.replace(" ","").replace(",",".")
+def betterParseInt(x:str)->float:
+    string = x.replace(" ","").replace(",",".")
+    if string == "" :
+        return None
+    return float(string)
 
 # ----------------------------------------- MAIN -------------------------------------------------------
 
 
-def main():
+def fetchOperationsToJson():
     # Create driver instance
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()),options=chrome_options)
     driver.get(soge_path)
@@ -107,13 +109,11 @@ def main():
             solde_comptable=betterParseInt(categories[5].text),
         )
         releves_final.append(operation)
-
-    saveOperationArrayToJson(releves_final, "date_1")
-    print("Data saved to json file")
-
-    print("Press Enter to close")
-    input()
+    releves_final.reverse()
+    return operationArrayToJson(releves_final)
 
 if __name__ == "__main__":
     load_dotenv()
-    main()
+    json_str = fetchOperationsToJson()
+    with open("data/test.json",mode='w+') as f :
+        json.dump(json.loads(json_str),f,indent=4)

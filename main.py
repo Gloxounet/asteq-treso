@@ -27,16 +27,25 @@ def removeFromFirstPresenceArray(element,array_json_target,keys_to_compare:list[
 # 3 : Ajuster web en fonction de plus récent excel
 # 4 : Ajouter à excel web ajusté
 
+# Create things in case they do not exists
+excel.createExcelIfNotExisting(filename_excel)
+excel.createSheetIfNotExisting(filename_excel,sheet_name)
+
+# 1
 excel_json_str = excel.excelToJson(filename_excel, sheet_name)
+excel_json = json.loads(excel_json_str)
 print("JSON generated from xlsx file")
+
+# 2
 web_json_str = operations.fetchOperationsToJson()
+web_json = json.loads(web_json_str)
 print("JSON generated from web Société Générale")
 
-excel_json = json.loads(excel_json_str)
-web_json = json.loads(web_json_str)
-
+# 3
 if len(excel_json) > 0 : web_json_new = removeFromFirstPresenceArray(excel_json[-1],web_json,['date','debit','credit','nature'])
+else : web_json_new = web_json
 
+#4
 if len(web_json_new) > 0 : excel.appendJsonToExcel(web_json_new,filename_excel,sheet_name)
 
 print(f"{len(web_json_new)} lines added to excel")

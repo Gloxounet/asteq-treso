@@ -3,16 +3,12 @@ from openpyxl import load_workbook
 import pandas as pd
 import json
 
-filename_json = 'data/' + 'test.json'
-filename_excel = 'data/' + 'test.xlsx'
-sheet_name = 'testSheet'
-
 # ------------------------------------------------- MANAGEMENT FUNCTIONS ----------------------------------------------------
 
 def createExcelIfNotExisting(filename_excel)->bool:
     if not(os.path.isfile(filename_excel)):
         print(f"Excel file '{filename_excel}' doesn't exists, creating a new file...")
-        with pd.ExcelWriter(filename_excel):
+        with pd.ExcelWriter(filename_excel,engine='xlsxwriter'):
             pass
         return False
     return True
@@ -51,19 +47,16 @@ def appendJsonToExcel(data,filename_excel,sheet_name):
 
 def excelToJson(filename_excel,sheet_name,save_in_file:str=None):
     # Get data from .xlsx file
-    excel_data_df = pd.read_excel(filename_excel, sheet_name=sheet_name,header=0)
+    try :
+        excel_data_df = pd.read_excel(filename_excel, sheet_name=sheet_name,header=0)
 
-    json_str = excel_data_df.to_json(orient="records")
-    json_dict = json.loads(json_str)
+        json_str = excel_data_df.to_json(orient="records")
+        json_dict = json.loads(json_str)
 
-    if (save_in_file != None):
-        with open(save_in_file,mode='w') as f:
-            json.dump(json_dict,f,indent=4)
+        if (save_in_file != None):
+            with open(save_in_file,mode='w') as f:
+                json.dump(json_dict,f,indent=4)
 
-    return json.dumps(json_dict, indent=4)
-
-#--------------------------------------------------------- MAIN ----------------------------------------------------   
-
-if __name__ == '__main__':
-    appendJsonToExcel(filename_json=filename_json,filename_excel=filename_excel,sheet_name=sheet_name)
-    print(excelToJson(filename_excel=filename_excel,sheet_name=sheet_name,save_in_file="data/test2.json"))
+        return json.dumps(json_dict, indent=4)
+    except :
+        return json.dumps([])

@@ -1,4 +1,7 @@
 .env
-/venv
+/venv*
 __pycache__
 /data
+asteq_treso.egg-info/
+build/
+dist/

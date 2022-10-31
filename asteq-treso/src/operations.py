@@ -1,7 +1,6 @@
 # ----------------------------------------- IMPORTS -------------------------------------------------------
 # Env variables
 from dataclasses import dataclass,asdict
-from dotenv import load_dotenv
 import os
 
 import json
@@ -111,9 +110,3 @@ def fetchOperationsToJson():
         releves_final.append(operation)
     releves_final.reverse()
     return operationArrayToJson(releves_final)
-
-if __name__ == "__main__":
-    load_dotenv()
-    json_str = fetchOperationsToJson()
-    with open("data/test.json",mode='w+') as f :
-        json.dump(json.loads(json_str),f,indent=4)

@@ -10,7 +10,7 @@ sheet_name = 'account_operations'
 def cli(set_user_id,filename):
 
     if os.getenv("USER_ID") == None :
-        return click.echo("USER_ID not found, please use '-u *your user_id*' flag to initiate it")
+        click.echo("USER_ID not found, please use '-u *your user_id*' flag to initiate it")
 
     #CLIENT
     if set_user_id != None:
